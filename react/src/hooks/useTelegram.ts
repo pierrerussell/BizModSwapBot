@@ -20,7 +20,6 @@ export function useTelegram() {
             tg.expand(); // Expands Mini App to full screen height
 
             if (tg.initDataUnsafe?.user) {
-                // eslint-disable-next-line react-hooks/set-state-in-effect
                 setUser(tg.initDataUnsafe.user);
                 setInitData(tg.initData); // Cryptographic raw string for backend verification
             } else {
@@ -31,6 +30,10 @@ export function useTelegram() {
                     username: 'test_student_nus'
                 });
             }
+        } else {
+            // Even if tg is not found (e.g. running in plain browser without script), 
+            // we might want a fallback for dev, but for now we keep it null to show Guest
+            console.warn('Telegram WebApp script not loaded');
         }
     }, []);
 
