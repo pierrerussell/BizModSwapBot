@@ -44,7 +44,7 @@ export function SlotWant({
             </Section>
 
             {selectedWantSlots.length > 0 && (
-                <div style={{ marginTop: '24px', marginBottom: '40px' }}>
+                <div style={{ marginTop: '24px', marginBottom: '40px', padding: '0 16px' }}>
                     <Button size="l" stretched onClick={onSubmit}>
                         Submit Swap Request ({selectedWantSlots.length} selected)
                     </Button>

@@ -48,9 +48,10 @@ export function ModuleSearch({
                 <div
                     style={{
                         background: 'var(--tg-theme-secondary-bg-color, #f4f4f5)',
-                        borderRadius: '8px',
-                        margin: '8px 0',
-                        overflow: 'hidden'
+                        borderRadius: '12px',
+                        margin: '8px 16px',
+                        overflow: 'hidden',
+                        border: '1px solid var(--border)'
                     }}
                 >
                     {searchResults.map((mod) => (

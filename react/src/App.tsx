@@ -118,90 +118,94 @@ export default function App() {
 
     return (
         <AppRoot style={{ maxWidth: '600px', margin: '0 auto' }}>
-            <div style={{ padding: '0 16px 40px' }}>
+            <div style={{ padding: '0 0 40px' }}>
                 {/* Header Username Tag */}
-                <div style={{ textAlign: 'right', fontSize: '12px', color: '#888', padding: '12px 0 8px' }}>
+                <div style={{ textAlign: 'right', fontSize: '12px', color: '#888', padding: '12px 16px 8px' }}>
                     User: <strong>@{user?.username || user?.first_name || 'Guest'}</strong>
                 </div>
 
             {/* Tabs */}
-            <SegmentedControl style={{ marginBottom: '20px' }}>
-                <SegmentedControl.Item
-                    selected={activeTab === 'create'}
-                    onClick={() => setActiveTab('create')}
-                >
-                    ➕ New Swap
-                </SegmentedControl.Item>
-                <SegmentedControl.Item
-                    selected={activeTab === 'list'}
-                    onClick={() => setActiveTab('list')}
-                >
-                    📋 My Swaps ({mySwaps.length})
-                </SegmentedControl.Item>
-            </SegmentedControl>
+            <div style={{ padding: '0 16px' }}>
+                <SegmentedControl style={{ marginBottom: '20px' }}>
+                    <SegmentedControl.Item
+                        selected={activeTab === 'create'}
+                        onClick={() => setActiveTab('create')}
+                    >
+                        ➕ New Swap
+                    </SegmentedControl.Item>
+                    <SegmentedControl.Item
+                        selected={activeTab === 'list'}
+                        onClick={() => setActiveTab('list')}
+                    >
+                        📋 My Swaps ({mySwaps.length})
+                    </SegmentedControl.Item>
+                </SegmentedControl>
+            </div>
 
             {/* Main Tab Content */}
-            {activeTab === 'create' ? (
-                <List>
-                    <TermSelector
-                        acadYear={acadYear}
-                        semester={semester}
-                        onYearChange={(yr) => {
-                            setAcadYear(yr);
-                            setSelectedModule(null);
-                            setSearchQuery('');
-                        }}
-                        onSemChange={(sem) => {
-                            setSemester(sem);
-                            setSelectedModule(null);
-                            setSearchQuery('');
-                        }}
-                    />
+            <div style={{ width: '100%', overflow: 'hidden' }}>
+                {activeTab === 'create' ? (
+                    <List style={{ width: '100%', overflow: 'hidden', margin: 0, padding: 0 }}>
+                        <TermSelector
+                            acadYear={acadYear}
+                            semester={semester}
+                            onYearChange={(yr) => {
+                                setAcadYear(yr);
+                                setSelectedModule(null);
+                                setSearchQuery('');
+                            }}
+                            onSemChange={(sem) => {
+                                setSemester(sem);
+                                setSelectedModule(null);
+                                setSearchQuery('');
+                            }}
+                        />
 
-                    <ModuleSearch
-                        searchQuery={searchQuery}
-                        searchResults={searchResults}
-                        allModules={allModules}
-                        onSearchChange={setSearchQuery}
-                        onSearchResultsChange={setSearchResults}
-                        onSelect={handleSelectModule}
-                    />
+                        <ModuleSearch
+                            searchQuery={searchQuery}
+                            searchResults={searchResults}
+                            allModules={allModules}
+                            onSearchChange={setSearchQuery}
+                            onSearchResultsChange={setSearchResults}
+                            onSelect={handleSelectModule}
+                        />
 
-                    {isLoading && (
-                        <Section>
-                            <Cell subtitle="Fetching timetable data from NUSMods...">
-                                ⏳ Loading class slots...
-                            </Cell>
-                        </Section>
-                    )}
+                        {isLoading && (
+                            <Section>
+                                <Cell subtitle="Fetching timetable data from NUSMods...">
+                                    ⏳ Loading class slots...
+                                </Cell>
+                            </Section>
+                        )}
 
-                    {selectedModule && !isLoading && (
-                        <>
-                            <SlotHave
-                                slots={availableHaveSlots}
-                                selectedSlot={haveSlot}
-                                onSelect={setHaveSlot}
-                            />
-
-                            {haveSlot && (
-                                <SlotWant
-                                    allSlots={allWantSlots}
-                                    haveSlot={haveSlot}
-                                    selectedWantSlots={selectedWantSlots}
-                                    onToggle={handleToggleWantSlot}
-                                    onSubmit={handleSubmit}
+                        {selectedModule && !isLoading && (
+                            <>
+                                <SlotHave
+                                    slots={availableHaveSlots}
+                                    selectedSlot={haveSlot}
+                                    onSelect={setHaveSlot}
                                 />
-                            )}
-                        </>
-                    )}
-                </List>
-            ) : (
-                <SwapList
-                    mySwaps={mySwaps}
-                    findMatches={findMatches}
-                    onCancel={cancelSwap}
-                />
-            )}
+
+                                {haveSlot && (
+                                    <SlotWant
+                                        allSlots={allWantSlots}
+                                        haveSlot={haveSlot}
+                                        selectedWantSlots={selectedWantSlots}
+                                        onToggle={handleToggleWantSlot}
+                                        onSubmit={handleSubmit}
+                                    />
+                                )}
+                            </>
+                        )}
+                    </List>
+                ) : (
+                    <SwapList
+                        mySwaps={mySwaps}
+                        findMatches={findMatches}
+                        onCancel={cancelSwap}
+                    />
+                )}
+            </div>
             </div>
         </AppRoot>
     );

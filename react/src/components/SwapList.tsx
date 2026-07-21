@@ -10,42 +10,43 @@ interface Props {
 export function SwapList({ mySwaps, findMatches, onCancel }: Props) {
     if (mySwaps.length === 0) {
         return (
-            <List>
-                <Section>
+            <List style={{ width: '100%', margin: 0, padding: 0 }}>
+                <Section style={{ margin: 0 }}>
                     <Cell subtitle="Tap 'New Swap' to submit your first request.">
-                No active swap requests.
-        </Cell>
-        </Section>
-        </List>
-    );
+                        No active swap requests.
+                    </Cell>
+                </Section>
+            </List>
+        );
     }
 
     return (
-        <List>
+        <List style={{ width: '100%', overflow: 'hidden', margin: 0, padding: 0 }}>
             {mySwaps.map((swap) => {
-                        const matches = findMatches(swap);
-                        return (
-                            <Section
-                                key={swap.id}
-                                header={`${swap.haveModuleCode} - Class ${swap.haveClassNo} (${swap.acadYear} Sem ${swap.semester})`}
-                            >
+                const matches = findMatches(swap);
+                return (
+                    <Section
+                        key={swap.id}
+                        style={{ overflow: 'hidden', margin: 0 }}
+                        header={<div style={{ whiteSpace: 'normal', wordBreak: 'break-word', padding: '0 16px' }}>{swap.haveModuleCode} - Class {swap.haveClassNo} ({swap.acadYear} Sem {swap.semester})</div>}
+                    >
                         <Cell subtitle={swap.haveDetails}>
                             <strong>You Have: Class {swap.haveClassNo}</strong>
                         </Cell>
                         <Cell subtitle="Your Acceptable Options:">
-                        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '4px' }}>
-                        {swap.wantSlots.map((w) => (
-                            <Chip key={`${w.moduleCode}-${w.classNo}`}>{w.moduleCode} ({w.classNo})</Chip>
-                        ))}
-                        </div>
+                            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '4px', padding: '0 16px' }}>
+                                {swap.wantSlots.map((w) => (
+                                    <Chip key={`${w.moduleCode}-${w.classNo}`}>{w.moduleCode} ({w.classNo})</Chip>
+                                ))}
+                            </div>
                         </Cell>
-                        <Cell headers="MATCHES FOUND">
+                        <Cell header={<div style={{ padding: '0 16px' }}>MATCHES FOUND</div>}>
                             {matches.length === 0 ? (
                                 <div style={{ color: '#888', fontSize: '13px', padding: '4px 0' }}>
                                     🔎 No direct matches found yet.
                                 </div>
                             ) : (
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '0 16px' }}>
                                     {matches.map((m) => (
                                         <div key={m.id} style={{
                                             background: 'var(--tg-theme-secondary-bg-color, #f4f4f5)',
@@ -69,11 +70,11 @@ export function SwapList({ mySwaps, findMatches, onCancel }: Props) {
                             )}
                         </Cell>
                         <Cell after={<Button mode="plain" size="s" onClick={() => onCancel(swap.id)}>Cancel</Button>}>
-                        Status: <Badge type="number">{matches.length} Matches</Badge>
+                            Status: <Badge type="number">{matches.length} Matches</Badge>
                         </Cell>
-                        </Section>
-                    );
-                    })}
-                    </List>
+                    </Section>
+                );
+            })}
+        </List>
     );
 }
