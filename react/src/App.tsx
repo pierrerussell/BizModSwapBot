@@ -19,7 +19,7 @@ export default function App() {
     const [activeTab, setActiveTab] = useState<'create' | 'list'>('create');
 
     // Term & Search State
-    const [acadYear, setAcadYear] = useState('2025-2026');
+    const [acadYear, setAcadYear] = useState('2026-2027');
     const [semester, setSemester] = useState(1);
     const [allModules, setAllModules] = useState<ModuleCondensed[]>([]);
     const [searchQuery, setSearchQuery] = useState('');

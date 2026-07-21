@@ -7,9 +7,9 @@ const MOCK_OTHER_USERS_SWAPS: SwapRequest[] = [
         id: 'mock-1',
         telegramUserId: 111,
         telegramUsername: 'slow_nus',
-        acadYear: '2025-2026',
+        acadYear: '2026-2027',
         semester: 1,
-        haveModuleCode: 'MKT1705',
+        haveModuleCode: 'MKT1705A',
         haveClassNo: 'A1',
         haveDetails: 'Thu 08:30-11:30',
         wantSlots: [
