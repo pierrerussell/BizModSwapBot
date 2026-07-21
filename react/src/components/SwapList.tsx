@@ -39,7 +39,7 @@ export function SwapList({ mySwaps, findMatches, onCancel }: Props) {
                         ))}
                         </div>
                         </Cell>
-                        <Cell header="MATCHES FOUND">
+                        <Cell headers="MATCHES FOUND">
                             {matches.length === 0 ? (
                                 <div style={{ color: '#888', fontSize: '13px', padding: '4px 0' }}>
                                     🔎 No direct matches found yet.
