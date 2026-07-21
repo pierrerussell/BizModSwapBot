@@ -13,7 +13,7 @@ const MOCK_OTHER_USERS_SWAPS: SwapRequest[] = [
         haveClassNo: 'A1',
         haveDetails: 'Thu 08:30-11:30',
         wantSlots: [
-            { moduleCode: 'MKT1705', classNo: 'C2', label: 'MKT1705 (C2) - Fri 15:00-18:00' }
+            { moduleCode: 'MKT1705C', classNo: 'C2', label: 'MKT1705 (C2) - Fri 15:00-18:00' }
         ],
         status: 'Searching...'
     }
