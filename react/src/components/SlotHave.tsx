@@ -15,7 +15,7 @@ export function SlotHave({ slots, selectedSlot, onSelect }: Props) {
                     ⚠️ No slots available
                 </Cell>
             ) : (
-                <div style={{ padding: '0 16px' }}>
+                <div style={{ padding: '0' }}>
                     <Select
                         header="Your Current Class"
                         value={selectedSlot ? `${selectedSlot.moduleCode}-${selectedSlot.classNo}` : ''}

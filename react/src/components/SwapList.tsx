@@ -1,4 +1,4 @@
-﻿import { List, Section, Cell, Button, Badge, Chip } from '@telegram-apps/telegram-ui';
+import {List, Section, Cell, Button, Badge, Chip} from '@telegram-apps/telegram-ui';
 import type { SwapRequest } from '../types/swap';
 
 interface Props {
@@ -21,32 +21,32 @@ export function SwapList({ mySwaps, findMatches, onCancel }: Props) {
     }
 
     return (
-        <List style={{ width: '100%', overflow: 'hidden', margin: 0, padding: 0 }}>
+        <List style={{ width: '100%', margin: 0, padding: 0 }}>
             {mySwaps.map((swap) => {
                 const matches = findMatches(swap);
                 return (
                     <Section
                         key={swap.id}
-                        style={{ overflow: 'hidden', margin: 0 }}
-                        header={<div style={{ whiteSpace: 'normal', wordBreak: 'break-word', padding: '0 16px' }}>{swap.haveModuleCode} - Class {swap.haveClassNo} ({swap.acadYear} Sem {swap.semester})</div>}
+                        style={{ margin: 0 }}
+                        header={<div style={{ whiteSpace: 'normal', wordBreak: 'break-word', padding: '0' }}>{swap.haveModuleCode} - Class {swap.haveClassNo} ({swap.acadYear} Sem {swap.semester})</div>}
                     >
                         <Cell subtitle={swap.haveDetails}>
                             <strong>You Have: Class {swap.haveClassNo}</strong>
                         </Cell>
-                        <Cell subtitle="Your Acceptable Options:">
-                            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '4px', padding: '0 16px' }}>
+                        <Section header={<div style={{ padding: '0' }}>Your Acceptable Options:</div>}>
+                            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '4px', padding: '0' }}>
                                 {swap.wantSlots.map((w) => (
                                     <Chip key={`${w.moduleCode}-${w.classNo}`}>{w.moduleCode} ({w.classNo})</Chip>
                                 ))}
                             </div>
-                        </Cell>
-                        <Cell headers="MATCHES FOUND">
+                        </Section>
+                        <Section header={<div style={{ padding: '0' }}>MATCHES FOUND</div>}>
                             {matches.length === 0 ? (
                                 <div style={{ color: '#888', fontSize: '13px', padding: '4px 0' }}>
                                     🔎 No direct matches found yet.
                                 </div>
                             ) : (
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '0 16px' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '4px 0' }}>
                                     {matches.map((m) => (
                                         <div key={m.id} style={{
                                             background: 'var(--tg-theme-secondary-bg-color, #f4f4f5)',
@@ -68,7 +68,7 @@ export function SwapList({ mySwaps, findMatches, onCancel }: Props) {
                                     ))}
                                 </div>
                             )}
-                        </Cell>
+                        </Section>
                         <Cell after={<Button mode="plain" size="s" onClick={() => onCancel(swap.id)}>Cancel</Button>}>
                             Status: <Badge type="number">{matches.length} Matches</Badge>
                         </Cell>

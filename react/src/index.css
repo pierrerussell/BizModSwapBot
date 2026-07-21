@@ -60,6 +60,7 @@
   flex-direction: column;
   box-sizing: border-box;
   background: var(--bg);
+  overflow-x: hidden;
 }
 
 html, body {

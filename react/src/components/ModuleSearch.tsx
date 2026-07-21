@@ -49,7 +49,7 @@ export function ModuleSearch({
                     style={{
                         background: 'var(--tg-theme-secondary-bg-color, #f4f4f5)',
                         borderRadius: '12px',
-                        margin: '8px 16px',
+                        margin: '8px 0',
                         overflow: 'hidden',
                         border: '1px solid var(--border)'
                     }}

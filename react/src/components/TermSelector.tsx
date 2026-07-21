@@ -1,4 +1,4 @@
-﻿import { Section, Select } from '@telegram-apps/telegram-ui';
+import {Section, Select} from '@telegram-apps/telegram-ui';
 
 interface Props {
     acadYear: string;
@@ -9,12 +9,13 @@ interface Props {
 
 export function TermSelector({ acadYear, semester, onYearChange, onSemChange }: Props) {
     return (
-        <Section header="1. ACADEMIC TERM">
-            <div style={{ display: 'flex', gap: '8px', padding: '0 16px' }}>
+        <Section header="1. ACADEMIC TERM" style={{ margin: 0 }}>
+            <div style={{ display: 'flex', padding: '0'}}>
                 <div style={{ flex: 1.2 }}>
-                    <Select 
-                        header="Acad Year" 
-                        value={acadYear} 
+                    <Select
+                        style={{ paddingLeft:'10px', paddingRight:'10px'}}
+                        header="Acad Year"
+                        value={acadYear}
                         onChange={(e) => onYearChange(e.target.value)}
                     >
                         <option value="2026-2027">2026/2027</option>
@@ -23,9 +24,10 @@ export function TermSelector({ acadYear, semester, onYearChange, onSemChange }: 
                     </Select>
                 </div>
                 <div style={{ flex: 1 }}>
-                    <Select 
-                        header="Semester" 
-                        value={semester} 
+                    <Select
+                        style={{ paddingLeft:'10px', paddingRight:'10px'}}
+                        header="Sem"
+                        value={semester}
                         onChange={(e) => onSemChange(Number(e.target.value))}
                     >
                         <option value={1}>Sem 1</option>
