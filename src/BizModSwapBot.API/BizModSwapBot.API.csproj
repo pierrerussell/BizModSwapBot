@@ -15,8 +15,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\BizModSwapBot.Domain\BizModSwapBot.Domain.csproj" />
-      <ProjectReference Include="..\..\BizModSwapBot.EfCore\BizModSwapBot.EfCore.csproj" />
+      <ProjectReference Include="..\BizModSwapBot.Domain\BizModSwapBot.Domain.csproj" />
+      <ProjectReference Include="..\BizModSwapBot.EfCore\BizModSwapBot.EfCore.csproj" />
     </ItemGroup>
 
 </Project>

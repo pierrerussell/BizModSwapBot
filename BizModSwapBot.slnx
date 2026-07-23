@@ -1,6 +1,6 @@
 <Solution>
   <Folder Name="/src/">
-    <Project Path="src/BizModSwapBot.API/BizModSwapBot.API/BizModSwapBot.API.csproj" />
+    <Project Path="src/BizModSwapBot.API/BizModSwapBot.API.csproj" />
     <Project Path="src/BizModSwapBot.Domain/BizModSwapBot.Domain.csproj" />
     <Project Path="src/BizModSwapBot.EfCore/BizModSwapBot.EfCore.csproj" />
   </Folder>
