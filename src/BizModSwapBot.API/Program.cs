@@ -24,6 +24,17 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(connectionString, b => b.EnableRetryOnFailure());
 });
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAzureFrontend", policy =>
+    {
+        policy.WithOrigins(
+                "https://agreeable-tree-07193f200.7.azurestaticapps.net"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 
 
@@ -42,7 +53,7 @@ if (app.Environment.IsProduction())
 {
     // app.UseMiddleware<TelegramAuthMiddleware>();
 }
-
+app.UseCors("AllowAzureFrontend");
 app.MapControllers();
 using (var scope = app.Services.CreateScope())
 {
