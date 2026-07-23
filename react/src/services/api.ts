@@ -1,6 +1,6 @@
 ﻿import type { SwapRequest } from '../types/swap';
 
-const API_BASE_URL = 'https://nusbizmodswapbot.runasp.net/api';
+const API_BASE_URL = 'http://nusbizmodswapbot.runasp.net/api';
 
 export async function submitSwapRequestToBackend(swap: SwapRequest, initData: string): Promise<void> {
     // Ready for ASP.NET POST /api/swap-request
