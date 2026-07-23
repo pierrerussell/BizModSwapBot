@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BizModSwapBot.API.Swaps;
 
-[Controller]
+[ApiController]
 [Route("api/[controller]")]
 public class SwapController : ControllerBase
 {
