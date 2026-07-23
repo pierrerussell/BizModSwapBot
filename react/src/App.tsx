@@ -15,8 +15,15 @@ import { SwapList } from './components/SwapList';
 
 export default function App() {
     const { user } = useTelegram();
-    const { allSwapsPool, addSwap, cancelSwap, findMatches } = useSwapData();
+    const { allSwapsPool, addSwap, cancelSwap, findMatches, fetchMySwaps, isLoadingSwaps } = useSwapData();
     const [activeTab, setActiveTab] = useState<'create' | 'list'>('create');
+
+    // Fetch user swaps on mount and when tab changes to 'list'
+    useEffect(() => {
+        if (activeTab === 'list') {
+            fetchMySwaps();
+        }
+    }, [activeTab, fetchMySwaps]);
 
     // Term & Search State
     const [acadYear, setAcadYear] = useState('2026-2027');
@@ -114,7 +121,6 @@ export default function App() {
         }
     };
 
-    const mySwaps = allSwapsPool.filter((s) => s.telegramUserId === (user?.id || 99999));
 
     return (
         <AppRoot>
@@ -204,11 +210,20 @@ export default function App() {
                     )}
                 </List>
             ) : (
-                <SwapList
-                    mySwaps={mySwaps}
-                    findMatches={findMatches}
-                    onCancel={cancelSwap}
-                />
+                <>
+                    {isLoadingSwaps && (
+                        <Section style={{ margin: 0 }}>
+                            <Cell subtitle="Refreshing your swap requests...">
+                                ⏳ Loading...
+                            </Cell>
+                        </Section>
+                    )}
+                    <SwapList
+                        mySwaps={allSwapsPool}
+                        findMatches={findMatches}
+                        onCancel={cancelSwap}
+                    />
+                </>
             )}
             </div>
         </AppRoot>

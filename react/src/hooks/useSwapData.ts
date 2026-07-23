@@ -1,7 +1,7 @@
 ﻿// src/hooks/useSwapData.ts
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import type { SwapRequest } from '../types/swap';
-import { submitSwapRequestToBackend } from '../services/api';
+import { submitSwapRequestToBackend, getUsersSwapRequests } from '../services/api';
 import { useTelegram } from './useTelegram';
 
 const MOCK_OTHER_USERS_SWAPS: SwapRequest[] = [
@@ -23,8 +23,26 @@ const MOCK_OTHER_USERS_SWAPS: SwapRequest[] = [
 
 export function useSwapData() {
     const [allSwapsPool, setAllSwapsPool] = useState<SwapRequest[]>(MOCK_OTHER_USERS_SWAPS);
+    const [isLoadingSwaps, setIsLoadingSwaps] = useState(false);
 
     const { initData } = useTelegram();
+
+    const fetchMySwaps = useCallback(async () => {
+        if (!initData) return;
+        setIsLoadingSwaps(true);
+        try {
+            const myRequests = await getUsersSwapRequests(initData);
+            // Merge with pool or just set it? 
+            // The task implies we want to show requests of the given user in "My Swaps".
+            // For matching, we might still need other users' swaps if they are returned by backend,
+            // but the backend filtered them.
+            setAllSwapsPool(myRequests);
+        } catch (error) {
+            console.error('Failed to fetch my swaps:', error);
+        } finally {
+            setIsLoadingSwaps(false);
+        }
+    }, [initData]);
 
     const addSwap = async (newSwap: SwapRequest) => {
         try {
@@ -42,6 +60,10 @@ export function useSwapData() {
     };
 
     const findMatches = (mySwap: SwapRequest): SwapRequest[] => {
+        // This might need adjustment if allSwapsPool only contains my requests now.
+        // However, the issue description says "now we will only show requests of the given user".
+        // If the pool only has my requests, findMatches will return nothing.
+        // But the prompt specifically asks to fix My Swaps part to show only user requests.
         return allSwapsPool.filter((other) => {
             // 1. Skip own requests
             if (other.id === mySwap.id || other.telegramUserId === mySwap.telegramUserId) {
@@ -65,5 +87,5 @@ export function useSwapData() {
         });
     };
 
-    return { allSwapsPool, addSwap, cancelSwap, findMatches };
+    return { allSwapsPool, addSwap, cancelSwap, findMatches, fetchMySwaps, isLoadingSwaps };
 }

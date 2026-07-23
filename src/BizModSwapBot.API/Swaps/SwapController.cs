@@ -20,7 +20,14 @@ public class SwapController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<ICollection<SwapRequest>>> Get()
     {
+        var telegramUserId = HttpContext.Items["TelegramUserId"] as long?;
+        if (telegramUserId == null)
+        {
+            return Unauthorized();
+        }
+        
         var swapReq = await _context.SwapRequests
+            .Where(x => x.TelegramUserId == telegramUserId)
             .Include(x => x.WantSlots)
             .ToListAsync();
         if (swapReq == null)
