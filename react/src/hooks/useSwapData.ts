@@ -1,6 +1,8 @@
 ﻿// src/hooks/useSwapData.ts
 import { useState } from 'react';
 import type { SwapRequest } from '../types/swap';
+import { submitSwapRequestToBackend } from '../services/api';
+import { useTelegram } from './useTelegram';
 
 const MOCK_OTHER_USERS_SWAPS: SwapRequest[] = [
     {
@@ -22,8 +24,17 @@ const MOCK_OTHER_USERS_SWAPS: SwapRequest[] = [
 export function useSwapData() {
     const [allSwapsPool, setAllSwapsPool] = useState<SwapRequest[]>(MOCK_OTHER_USERS_SWAPS);
 
-    const addSwap = (newSwap: SwapRequest) => {
-        setAllSwapsPool((prev) => [newSwap, ...prev]);
+    const { initData } = useTelegram();
+
+    const addSwap = async (newSwap: SwapRequest) => {
+        try {
+            await submitSwapRequestToBackend(newSwap, initData);
+            setAllSwapsPool((prev) => [newSwap, ...prev]);
+        } catch (error) {
+            console.error('Failed to submit swap to backend:', error);
+            // Optionally handle error (e.g., show notification)
+            throw error;
+        }
     };
 
     const cancelSwap = (id: string) => {
