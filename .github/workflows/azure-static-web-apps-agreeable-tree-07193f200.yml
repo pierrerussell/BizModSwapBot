@@ -62,7 +62,7 @@ jobs:
         run: dotnet publish --configuration Release --output ./publish --no-build
 
       - name: Deploy via WebDeploy
-        uses: rasmusbuchholdt/simply-web-deploy@v2
+        uses: rasmusbuchholdt/simply-web-deploy@2.1.0
         with:
           website-name: ${{ secrets.MONSTERASP_WEBSITE_NAME }}
           server-computer-name: ${{ secrets.MONSTERASP_COMPUTER_NAME }}
