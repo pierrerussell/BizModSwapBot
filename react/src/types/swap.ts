@@ -34,8 +34,16 @@ export interface DesiredSlot {
 
 // src/types/swap.ts
 
+export interface SwapRequestMatch {
+    swapRequestId: string;
+    moduleCode: string;
+    classNo: string;
+    telegramUserId: string;
+    telegramUsername: string;
+}
+
 export interface SwapRequest {
-    id: string;
+    id: string; // Map from swapRequestId in backend
     telegramUserId: number;
     telegramUsername: string;
     acadYear: string;        // e.g. "2025-2026"
@@ -43,8 +51,22 @@ export interface SwapRequest {
     haveModuleCode: string;
     haveClassNo: string;
     haveDetails: string;
-    wantSlots: DesiredSlot[];
-    status: string;
+    wantSlots: DesiredSlot[]; // Note: Backend SwapRequestWithMatchesDto doesn't seem to return wantSlots, but we might still need them or the interface can keep them optional if it's for local use too. Actually, looking at SwapController.cs, SwapRequestWithMatchesDto does NOT include wantSlots.
+    matches: SwapRequestMatch[];
+    status?: string;
+}
+
+export interface SwapRequestWithMatchesDto {
+    swapRequestId: string;
+    telegramUserId: number;
+    telegramUsername: string;
+    acadYear: string;
+    semester: number;
+    haveModuleCode: string;
+    haveClassNo: string;
+    haveDetails: string;
+    wantSlots: { moduleCode: string; classNo: string }[];
+    matches: SwapRequestMatch[];
 }
 
 export interface CreateSwapRequestDto {

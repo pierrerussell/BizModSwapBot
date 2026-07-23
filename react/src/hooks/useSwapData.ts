@@ -1,28 +1,11 @@
-﻿// src/hooks/useSwapData.ts
+// src/hooks/useSwapData.ts
 import { useState, useCallback } from 'react';
 import type { SwapRequest } from '../types/swap';
-import { submitSwapRequestToBackend, getUsersSwapRequests } from '../services/api';
+import { submitSwapRequestToBackend, getUsersSwapRequests, deleteSwapRequest } from '../services/api';
 import { useTelegram } from './useTelegram';
 
-const MOCK_OTHER_USERS_SWAPS: SwapRequest[] = [
-    {
-        id: 'mock-1',
-        telegramUserId: 111,
-        telegramUsername: 'slow_nus',
-        acadYear: '2026-2027',
-        semester: 1,
-        haveModuleCode: 'MKT1705A',
-        haveClassNo: 'A1',
-        haveDetails: 'Thu 08:30-11:30',
-        wantSlots: [
-            { moduleCode: 'MKT1705C', classNo: 'C2', label: 'MKT1705 (C2) - Fri 15:00-18:00' }
-        ],
-        status: 'Searching...'
-    }
-];
-
 export function useSwapData() {
-    const [allSwapsPool, setAllSwapsPool] = useState<SwapRequest[]>(MOCK_OTHER_USERS_SWAPS);
+    const [allSwapsPool, setAllSwapsPool] = useState<SwapRequest[]>([]);
     const [isLoadingSwaps, setIsLoadingSwaps] = useState(false);
 
     const { initData } = useTelegram();
@@ -44,47 +27,29 @@ export function useSwapData() {
         }
     }, [initData]);
 
-    const addSwap = async (newSwap: SwapRequest) => {
+    const addSwap = async (newSwap: any) => {
         try {
             await submitSwapRequestToBackend(newSwap, initData);
-            setAllSwapsPool((prev) => [newSwap, ...prev]);
+            // Refresh from backend to get the real IDs and pre-calculated matches
+            await fetchMySwaps();
         } catch (error) {
             console.error('Failed to submit swap to backend:', error);
-            // Optionally handle error (e.g., show notification)
             throw error;
         }
     };
 
-    const cancelSwap = (id: string) => {
-        setAllSwapsPool((prev) => prev.filter((s) => s.id !== id));
+    const cancelSwap = async (id: string) => {
+        try {
+            await deleteSwapRequest(id, initData);
+            setAllSwapsPool((prev) => prev.filter((s) => s.id !== id));
+        } catch (error) {
+            console.error('Failed to cancel swap:', error);
+        }
     };
 
-    const findMatches = (mySwap: SwapRequest): SwapRequest[] => {
-        // This might need adjustment if allSwapsPool only contains my requests now.
-        // However, the issue description says "now we will only show requests of the given user".
-        // If the pool only has my requests, findMatches will return nothing.
-        // But the prompt specifically asks to fix My Swaps part to show only user requests.
-        return allSwapsPool.filter((other) => {
-            // 1. Skip own requests
-            if (other.id === mySwap.id || other.telegramUserId === mySwap.telegramUserId) {
-                return false;
-            }
-
-            // 2. Term check: MUST be same Academic Year AND Semester
-            if (other.acadYear !== mySwap.acadYear || other.semester !== mySwap.semester) {
-                return false;
-            }
-
-            // 3. Match logic
-            const theyHaveWhatIWant = mySwap.wantSlots.some(
-                (w) => w.moduleCode === other.haveModuleCode && w.classNo === other.haveClassNo
-            );
-            const theyWantWhatIHave = other.wantSlots.some(
-                (w) => w.moduleCode === mySwap.haveModuleCode && w.classNo === mySwap.haveClassNo
-            );
-
-            return theyHaveWhatIWant && theyWantWhatIHave;
-        });
+    const findMatches = (mySwap: SwapRequest): any[] => {
+        // Matches are now pre-calculated by the backend
+        return mySwap.matches || [];
     };
 
     return { allSwapsPool, addSwap, cancelSwap, findMatches, fetchMySwaps, isLoadingSwaps };

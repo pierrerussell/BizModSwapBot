@@ -4,7 +4,7 @@ import '@telegram-apps/telegram-ui/dist/styles.css';
 
 import { useTelegram } from './hooks/useTelegram';
 import { useSwapData } from './hooks/useSwapData';
-import type { ModuleCondensed, TimetableSlot, DesiredSlot, SwapRequest } from './types/swap';
+import type { ModuleCondensed, TimetableSlot, DesiredSlot } from './types/swap';
 import { fetchModuleList, fetchModuleTimetables } from './services/nusmods';
 
 import { TermSelector } from './components/TermSelector';
@@ -73,33 +73,38 @@ export default function App() {
     };
 
     // Handler for submitting a new swap request
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!haveSlot || selectedWantSlots.length === 0) return;
 
-        const newSwap: SwapRequest = {
-            id: Date.now().toString(),
+        const newSwap = {
             telegramUserId: user?.id || 99999,
             telegramUsername: user?.username || 'me_student',
-            acadYear: acadYear,       // <-- Included here
-            semester: semester,       // <-- Included here
+            acadYear: acadYear,
+            semester: semester,
             haveModuleCode: haveSlot.moduleCode,
             haveClassNo: haveSlot.classNo,
             haveDetails: `${haveSlot.day} ${haveSlot.startTime}-${haveSlot.endTime}`,
-            wantSlots: selectedWantSlots,
-            status: 'Searching...'
+            wantSlots: selectedWantSlots.map(s => ({
+                moduleCode: s.moduleCode,
+                classNo: s.classNo
+            }))
         };
 
-        addSwap(newSwap);
+        try {
+            await addSwap(newSwap);
 
-        // Reset form
-        setSelectedModule(null);
-        setSearchQuery('');
-        setHaveSlot(null);
-        setSelectedWantSlots([]);
-        setAvailableHaveSlots([]);
-        setAllWantSlots([]);
+            // Reset form
+            setSelectedModule(null);
+            setSearchQuery('');
+            setHaveSlot(null);
+            setSelectedWantSlots([]);
+            setAvailableHaveSlots([]);
+            setAllWantSlots([]);
 
-        setActiveTab('list');
+            setActiveTab('list');
+        } catch (e) {
+            console.error('Failed to submit swap:', e);
+        }
     };
 
     // Toggle selection of desired slots in Step 4

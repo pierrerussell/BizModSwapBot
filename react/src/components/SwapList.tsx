@@ -1,9 +1,9 @@
 import {List, Section, Cell, Button, Badge, Chip} from '@telegram-apps/telegram-ui';
-import type { SwapRequest } from '../types/swap';
+import type { SwapRequest, SwapRequestMatch } from '../types/swap';
 
 interface Props {
     mySwaps: SwapRequest[];
-    findMatches: (swap: SwapRequest) => SwapRequest[];
+    findMatches: (swap: SwapRequest) => SwapRequestMatch[];
     onCancel: (id: string) => void;
 }
 
@@ -35,9 +35,13 @@ export function SwapList({ mySwaps, findMatches, onCancel }: Props) {
                         </Cell>
                         <Section header={<div style={{ padding: '0' }}>Your Acceptable Options:</div>}>
                             <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '4px', padding: '0' }}>
-                                {swap.wantSlots.map((w) => (
-                                    <Chip key={`${w.moduleCode}-${w.classNo}`}>{w.moduleCode} ({w.classNo})</Chip>
-                                ))}
+                                {swap.wantSlots && swap.wantSlots.length > 0 ? (
+                                    swap.wantSlots.map((w) => (
+                                        <Chip key={`${w.moduleCode}-${w.classNo}`}>{w.moduleCode} ({w.classNo})</Chip>
+                                    ))
+                                ) : (
+                                    <div style={{ color: '#888', fontSize: '13px' }}>Specified in request.</div>
+                                )}
                             </div>
                         </Section>
                         <Section header={<div style={{ padding: '0' }}>MATCHES FOUND</div>}>
@@ -48,7 +52,7 @@ export function SwapList({ mySwaps, findMatches, onCancel }: Props) {
                             ) : (
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '4px 0' }}>
                                     {matches.map((m) => (
-                                        <div key={m.id} style={{
+                                        <div key={m.swapRequestId} style={{
                                             background: 'var(--tg-theme-secondary-bg-color, #f4f4f5)',
                                             padding: '12px',
                                             borderRadius: '12px',
@@ -59,7 +63,7 @@ export function SwapList({ mySwaps, findMatches, onCancel }: Props) {
                                                 <Badge type="number">Match</Badge>
                                             </div>
                                             <div style={{ fontSize: '14px', color: 'var(--text)' }}>
-                                                Has Class {m.haveClassNo} ({m.haveDetails})
+                                                Has Class {m.classNo} ({m.moduleCode})
                                             </div>
                                             <a href={`https://t.me/${m.telegramUsername}`} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
                                                 <Button size="s" stretched style={{ marginTop: '8px' }}>💬 DM User</Button>
