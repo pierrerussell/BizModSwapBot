@@ -58,11 +58,11 @@ jobs:
       - name: Build Backend
         run: dotnet build ./src/BizModSwapBot.API/BizModSwapBot.API.csproj --configuration Release --no-restore
 
-      # Force the published files directly into the root workspace publish folder
+      # Output directly into a relative folder named 'publish' in the root directory
       - name: Publish Backend
-        run: dotnet publish ./src/BizModSwapBot.API/BizModSwapBot.API.csproj --configuration Release --output "${{ github.workspace }}/publish"
+        run: dotnet publish ./src/BizModSwapBot.API/BizModSwapBot.API.csproj --configuration Release --output ./publish
 
-      # Pass the absolute path to WebDeploy
+      # Pass only the relative directory name 'publish'
       - name: Deploy via WebDeploy
         uses: rasmusbuchholdt/simply-web-deploy@2.1.0
         with:
@@ -70,7 +70,7 @@ jobs:
           server-computer-name: ${{ secrets.MONSTERASP_COMPUTER_NAME }}
           server-username: ${{ secrets.MONSTERASP_USERNAME }}
           server-password: ${{ secrets.MONSTERASP_PASSWORD }}
-          source-path: '${{ github.workspace }}/publish'
+          source-path: 'publish' # <--- Relative path only (do not use ${{ github.workspace }})
           
           
   close_pull_request_job:
