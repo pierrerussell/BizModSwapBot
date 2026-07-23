@@ -35,7 +35,7 @@ if (app.Environment.IsDevelopment())
 
 if (app.Environment.IsProduction())
 {
-    app.UseMiddleware<TelegramAuthMiddleware>();
+    // app.UseMiddleware<TelegramAuthMiddleware>();
 }
 
 app.MapControllers();
