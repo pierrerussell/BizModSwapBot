@@ -1,10 +1,11 @@
 ﻿import type { SwapRequest } from '../types/swap';
 
-const API_BASE_URL = 'https://your-monsterasp-backend.com/api'; // Replace when backend is published
+const API_BASE_URL = 'https://nusbizmodswapbot.runasp.net/api';
 
 export async function submitSwapRequestToBackend(swap: SwapRequest, initData: string): Promise<void> {
     // Ready for ASP.NET POST /api/swap-request
-    await fetch(`${API_BASE_URL}/swap-request`, {
+    console.log('Submitting swap request to backend:', swap);
+    await fetch(`${API_BASE_URL}/swap`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

@@ -46,3 +46,19 @@ export interface SwapRequest {
     wantSlots: DesiredSlot[];
     status: string;
 }
+
+export interface CreateSwapRequestDto {
+    telegramUserId: number;
+    telegramUsername: string;
+    acadYear: string;
+    semester: number;
+    haveModuleCode: string;
+    haveClassNo: string;
+    haveDetails: string;
+    wantSlots: CreateDesiredSlotDto[];
+}
+
+export interface CreateDesiredSlotDto {
+    moduleCode: string;
+    classNo: string;
+}
