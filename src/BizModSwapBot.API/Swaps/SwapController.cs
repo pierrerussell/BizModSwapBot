@@ -1,6 +1,7 @@
 ﻿using BizModSwapBot.Domain.Swaps;
 using BizModSwapBot.EfCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BizModSwapBot.API.Swaps;
 
@@ -16,6 +17,15 @@ public class SwapController : ControllerBase
         
     }
     
+    [HttpGet]
+    public async Task<ActionResult<ICollection<SwapRequest>>> Get()
+    {
+        var swapReq = await _context.SwapRequests.ToListAsync();
+        if (swapReq == null)
+            return NotFound();
+        return swapReq;
+    }
+    
     
     [HttpPost]
     public async Task<IActionResult> Post(
@@ -23,26 +33,41 @@ public class SwapController : ControllerBase
         )
     {
         
-        var swapReq = new SwapRequest(
-            swapRequest.telegramUserId,
-            swapRequest.telegramUsername,
-            swapRequest.acadYear,
-            swapRequest.semester,
-            swapRequest.haveModuleCode,
-            swapRequest.haveClassNo,
-            swapRequest.haveDetails
-        );
-
-        foreach (var slot in swapRequest.wantSlots)
+        try
         {
-            swapReq.AddWantSlot(slot.moduleCode, slot.classNo);
-        }
-        
-        Console.WriteLine(swapRequest);
-        _context.SwapRequests.Add(swapReq);
-        await _context.SaveChangesAsync();
+            var swapReq = new SwapRequest(
+                swapRequest.telegramUserId,
+                swapRequest.telegramUsername,
+                swapRequest.acadYear,
+                swapRequest.semester,
+                swapRequest.haveModuleCode,
+                swapRequest.haveClassNo,
+                swapRequest.haveDetails
+            );
 
-        return Created(string.Empty, swapReq);
+            if (swapRequest.wantSlots != null)
+            {
+                foreach (var slot in swapRequest.wantSlots)
+                {
+                    swapReq.AddWantSlot(slot.moduleCode, slot.classNo);
+                }
+            }
+
+            _context.SwapRequests.Add(swapReq);
+            await _context.SaveChangesAsync();
+
+            // Return primitive/DTO object to avoid serialization reference loops
+            return Created(string.Empty, new { id = swapReq.Id, status = "Created successfully" });
+        }
+        catch (Exception ex)
+        {
+            // Catch EF Core database errors or connection issues and return readable 500 error instead of crashing IIS
+            return StatusCode(500, new 
+            { 
+                error = "Database operation failed", 
+                details = ex.InnerException?.Message ?? ex.Message 
+            });
+        }
     }
     
     [HttpDelete("{id:guid}")]
