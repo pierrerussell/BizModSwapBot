@@ -29,7 +29,8 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAzureFrontend", policy =>
     {
-        policy.WithOrigins(
+        policy
+            .WithOrigins(
                 "https://agreeable-tree-07193f200.7.azurestaticapps.net"
             )
             .AllowAnyHeader()

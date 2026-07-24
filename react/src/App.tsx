@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { AppRoot, List, SegmentedControl, Section, Cell } from '@telegram-apps/telegram-ui';
+import { AppRoot, List, SegmentedControl, Section, Cell, Snackbar } from '@telegram-apps/telegram-ui';
 import '@telegram-apps/telegram-ui/dist/styles.css';
 
 import { useTelegram } from './hooks/useTelegram';
@@ -17,11 +17,16 @@ export default function App() {
     const { user } = useTelegram();
     const { allSwapsPool, addSwap, cancelSwap, findMatches, fetchMySwaps, isLoadingSwaps } = useSwapData();
     const [activeTab, setActiveTab] = useState<'create' | 'list'>('create');
+    const [snackbar, setSnackbar] = useState<{ message: string; description?: string } | null>(null);
+
+    const showNotification = (message: string, description?: string) => {
+        setSnackbar({ message, description });
+    };
 
     // Fetch user swaps on mount and when tab changes to 'list'
     useEffect(() => {
         if (activeTab === 'list') {
-            fetchMySwaps();
+            fetchMySwaps().catch((err) => showNotification("Error", err.message));
         }
     }, [activeTab, fetchMySwaps]);
 
@@ -102,8 +107,9 @@ export default function App() {
             setAllWantSlots([]);
 
             setActiveTab('list');
-        } catch (e) {
+        } catch (e: any) {
             console.error('Failed to submit swap:', e);
+            showNotification("Submission Failed", e.message);
         }
     };
 
@@ -226,9 +232,21 @@ export default function App() {
                     <SwapList
                         mySwaps={allSwapsPool}
                         findMatches={findMatches}
-                        onCancel={cancelSwap}
+                        onCancel={(id) => {
+                            cancelSwap(id).catch((err) => showNotification("Cancel Failed", err.message));
+                        }}
                     />
                 </>
+            )}
+
+            {snackbar && (
+                <Snackbar
+                    onClose={() => setSnackbar(null)}
+                    description={snackbar.description}
+                    duration={4000}
+                >
+                    {snackbar.message}
+                </Snackbar>
             )}
             </div>
         </AppRoot>

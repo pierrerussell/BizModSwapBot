@@ -15,13 +15,10 @@ export function useSwapData() {
         setIsLoadingSwaps(true);
         try {
             const myRequests = await getUsersSwapRequests(initData);
-            // Merge with pool or just set it? 
-            // The task implies we want to show requests of the given user in "My Swaps".
-            // For matching, we might still need other users' swaps if they are returned by backend,
-            // but the backend filtered them.
             setAllSwapsPool(myRequests);
         } catch (error) {
             console.error('Failed to fetch my swaps:', error);
+            throw error;
         } finally {
             setIsLoadingSwaps(false);
         }
@@ -44,6 +41,7 @@ export function useSwapData() {
             setAllSwapsPool((prev) => prev.filter((s) => s.id !== id));
         } catch (error) {
             console.error('Failed to cancel swap:', error);
+            throw error;
         }
     };
 
