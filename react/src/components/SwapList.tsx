@@ -117,7 +117,7 @@ export function SwapList({ mySwaps, findMatches, onCancel, onClose }: Props) {
                                 swap.status === 'Closed' ? (
                                     <Badge type="number" style={{ background: '#888' }}>Closed</Badge>
                                 ) : (
-                                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                    <div style={{ marginTop: "4px", display: 'flex', gap: '8px', alignItems: 'center' }}>
                                         <Button 
                                             size="s" 
                                             onClick={() => handleCloseClick(swap.id)}
