@@ -26,6 +26,7 @@ export interface TelegramWebApp {
         hide: () => void;
         onClick: (callback: () => void) => void;
     };
+    showConfirm: (message: string, callback: (ok: boolean) => void) => void;
 }
 
 declare global {

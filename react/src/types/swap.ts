@@ -53,7 +53,7 @@ export interface SwapRequest {
     haveDetails: string;
     wantSlots: DesiredSlot[]; // Note: Backend SwapRequestWithMatchesDto doesn't seem to return wantSlots, but we might still need them or the interface can keep them optional if it's for local use too. Actually, looking at SwapController.cs, SwapRequestWithMatchesDto does NOT include wantSlots.
     matches: SwapRequestMatch[];
-    status?: string;
+    status: string;
 }
 
 export interface SwapRequestWithMatchesDto {
@@ -67,6 +67,7 @@ export interface SwapRequestWithMatchesDto {
     haveDetails: string;
     wantSlots: { moduleCode: string; classNo: string }[];
     matches: SwapRequestMatch[];
+    status: string;
 }
 
 export interface CreateSwapRequestDto {

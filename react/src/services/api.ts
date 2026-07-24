@@ -59,7 +59,7 @@ export async function getUsersSwapRequests(initData: string): Promise<SwapReques
             label: `${w.moduleCode} (${w.classNo})`
         })) : [],
         matches: item.matches || [],
-        status: 'Active'
+        status: item.status || 'Active'
     }));
 }
 
@@ -72,4 +72,15 @@ export async function deleteSwapRequest(id: string, initData: string): Promise<v
     });
 
     await handleResponse(response, 'Failed to delete swap request');
+}
+
+export async function closeSwapRequest(id: string, initData: string): Promise<void> {
+    const response = await fetch(`${API_BASE_URL}/swap/${id}/close`, {
+        method: 'POST',
+        headers: {
+            'X-Telegram-Init-Data': initData
+        }
+    });
+
+    await handleResponse(response, 'Failed to close swap request');
 }

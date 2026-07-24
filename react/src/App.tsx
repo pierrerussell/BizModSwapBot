@@ -15,7 +15,7 @@ import { SwapList } from './components/SwapList';
 
 export default function App() {
     const { user } = useTelegram();
-    const { allSwapsPool, addSwap, cancelSwap, findMatches, fetchMySwaps, isLoadingSwaps } = useSwapData();
+    const { allSwapsPool, addSwap, cancelSwap, closeSwap, findMatches, fetchMySwaps, isLoadingSwaps } = useSwapData();
     const [activeTab, setActiveTab] = useState<'create' | 'list'>('create');
     const [error, setError] = useState<{ message: string; description?: string } | null>(null);
 
@@ -269,6 +269,9 @@ export default function App() {
                         findMatches={findMatches}
                         onCancel={(id) => {
                             cancelSwap(id).catch((err) => showNotification("Cancel Failed", err.message));
+                        }}
+                        onClose={(id) => {
+                            closeSwap(id).catch((err) => showNotification("Close Failed", err.message));
                         }}
                     />
                 </>

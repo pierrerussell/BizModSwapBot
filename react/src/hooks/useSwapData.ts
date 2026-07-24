@@ -1,7 +1,7 @@
 // src/hooks/useSwapData.ts
 import { useState, useCallback } from 'react';
 import type { SwapRequest } from '../types/swap';
-import { submitSwapRequestToBackend, getUsersSwapRequests, deleteSwapRequest } from '../services/api';
+import { submitSwapRequestToBackend, getUsersSwapRequests, deleteSwapRequest, closeSwapRequest } from '../services/api';
 import { useTelegram } from './useTelegram';
 
 export function useSwapData() {
@@ -45,10 +45,20 @@ export function useSwapData() {
         }
     };
 
+    const closeSwap = async (id: string) => {
+        try {
+            await closeSwapRequest(id, initData);
+            setAllSwapsPool((prev) => prev.filter((s) => s.id !== id));
+        } catch (error) {
+            console.error('Failed to close swap:', error);
+            throw error;
+        }
+    };
+
     const findMatches = (mySwap: SwapRequest): any[] => {
         // Matches are now pre-calculated by the backend
         return mySwap.matches || [];
     };
 
-    return { allSwapsPool, addSwap, cancelSwap, findMatches, fetchMySwaps, isLoadingSwaps };
+    return { allSwapsPool, addSwap, cancelSwap, closeSwap, findMatches, fetchMySwaps, isLoadingSwaps };
 }

@@ -27,7 +27,8 @@ public class SwapController : ControllerBase
         }
 
         var result = await _context.SwapRequests
-            .Where(mySwap => mySwap.TelegramUserId == telegramUserId)
+            .Where(mySwap => mySwap.TelegramUserId == telegramUserId &&
+                             mySwap.Status == "Pending")
             .Select(mySwap => new SwapRequestWithMatchesDto(
                 mySwap.Id,
                 mySwap.TelegramUserId,
@@ -50,7 +51,9 @@ public class SwapController : ControllerBase
                         // 3. Other user HAS a slot that I WANT
                         mySwap.WantSlots.Any(w => w.ModuleCode == other.HaveModuleCode && w.ClassNo == other.HaveClassNo) &&
                         // 4. Other user WANTS the slot that I HAVE
-                        other.WantSlots.Any(w => w.ModuleCode == mySwap.HaveModuleCode && w.ClassNo == mySwap.HaveClassNo)
+                        other.WantSlots.Any(w => w.ModuleCode == mySwap.HaveModuleCode && w.ClassNo == mySwap.HaveClassNo) &&
+                        // 5. Other user's request is still pending a swap
+                        other.Status == "Pending"
                     )
                     .Select(other => new SwapRequestMatchDto(
                         other.Id,
@@ -59,7 +62,8 @@ public class SwapController : ControllerBase
                         other.TelegramUserId.ToString(),
                         other.TelegramUsername
                     ))
-                    .ToList()
+                    .ToList(),
+                mySwap.Status
             ))
             .ToListAsync();
 
@@ -143,8 +147,24 @@ public class SwapController : ControllerBase
         await _context.SaveChangesAsync();
         return NoContent();
     }
-    
-    
+
+    [HttpPost("{id:guid}/close")]
+    public async Task<IActionResult> Close(Guid id)
+    {
+        var telegramUserId = HttpContext.Items["TelegramUserId"] as long?;
+        if (telegramUserId == null)
+        {
+            return Unauthorized();
+        }
+
+        var swapReq = await _context.SwapRequests.FirstOrDefaultAsync(x => x.Id == id && x.TelegramUserId == telegramUserId);
+        if (swapReq == null)
+            return NotFound();
+
+        swapReq.SetStatus("Closed");
+        await _context.SaveChangesAsync();
+        return Ok(new { status = "Closed" });
+    }
 }
 
 public record CreateSwapRequestDto(
@@ -170,7 +190,8 @@ public record SwapRequestWithMatchesDto(
     string haveClassNo,
     string haveDetails,
     ICollection<DesiredSlot> wantSlots,
-    ICollection<SwapRequestMatchDto> matches
+    ICollection<SwapRequestMatchDto> matches,
+    string status
     );
     
 public record SwapRequestMatchDto(

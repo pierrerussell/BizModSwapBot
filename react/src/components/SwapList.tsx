@@ -5,9 +5,44 @@ interface Props {
     mySwaps: SwapRequest[];
     findMatches: (swap: SwapRequest) => SwapRequestMatch[];
     onCancel: (id: string) => void;
+    onClose: (id: string) => void;
 }
 
-export function SwapList({ mySwaps, findMatches, onCancel }: Props) {
+export function SwapList({ mySwaps, findMatches, onCancel, onClose }: Props) {
+    const handleCancelClick = (id: string) => {
+        const tg = window.Telegram?.WebApp;
+        if (tg?.showConfirm) {
+            tg.showConfirm(
+                "Are you sure you want to cancel this swap request? If you found a swap, please press 'Found swap!' instead.",
+                (ok: boolean) => {
+                    if (ok) onCancel(id);
+                }
+            );
+        } else {
+            // Fallback for browsers
+            if (window.confirm("Are you sure you want to cancel this swap request?")) {
+                onCancel(id);
+            }
+        }
+    };
+
+    const handleCloseClick = (id: string) => {
+        const tg = window.Telegram?.WebApp;
+        if (tg?.showConfirm) {
+            tg.showConfirm(
+                "Did you find a match for this swap? This will close the request.",
+                (ok: boolean) => {
+                    if (ok) onClose(id);
+                }
+            );
+        } else {
+            // Fallback for browsers
+            if (window.confirm("Did you find a match for this swap? This will close the request.")) {
+                onClose(id);
+            }
+        }
+    };
+
     if (mySwaps.length === 0) {
         return (
             <List style={{ width: '100%', margin: 0, padding: 0 }}>
@@ -77,7 +112,31 @@ export function SwapList({ mySwaps, findMatches, onCancel }: Props) {
                                 </div>
                             )}
                         </Section>
-                        <Cell after={<Button mode="plain" size="s" onClick={() => onCancel(swap.id)}>Cancel</Button>}>
+                        <Cell 
+                            after={
+                                swap.status === 'Closed' ? (
+                                    <Badge type="number" style={{ background: '#888' }}>Closed</Badge>
+                                ) : (
+                                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                        <Button 
+                                            size="s" 
+                                            onClick={() => handleCloseClick(swap.id)}
+                                            style={{ background: 'var(--tg-theme-button-color, #2481cc)' }}
+                                        >
+                                            Found swap!
+                                        </Button>
+                                        <Button 
+                                            mode="plain" 
+                                            size="s" 
+                                            onClick={() => handleCancelClick(swap.id)}
+                                            style={{ color: '#ff3b30' }}
+                                        >
+                                            Delete
+                                        </Button>
+                                    </div>
+                                )
+                            }
+                        >
                             Status: <Badge type="number">{matches.length} Matches</Badge>
                         </Cell>
                     </Section>
