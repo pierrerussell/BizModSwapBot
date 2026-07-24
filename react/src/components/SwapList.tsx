@@ -72,7 +72,7 @@ export function SwapList({ mySwaps, findMatches, onCancel, onClose }: Props) {
                         <Cell subtitle={swap.haveDetails}>
                             <strong>You Have: Class {swap.haveClassNo}</strong>
                         </Cell>
-                        <Section header={<div style={{ padding: '0' }}>Your Acceptable Options:</div>}>
+                        <Section header={<div style={{ padding: '0' }}>You want:</div>}>
                             <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '4px', marginBottom: '4px' , padding: '0' }}>
                                 {swap.wantSlots && swap.wantSlots.length > 0 ? (
                                     swap.wantSlots.map((w) => (
