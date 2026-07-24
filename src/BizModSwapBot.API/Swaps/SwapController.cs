@@ -96,8 +96,9 @@ public class SwapController : ControllerBase
         
         try
         {
+            var authenticatedId = HttpContext.Items["TelegramUserId"] as long?;
             var swapReq = new SwapRequest(
-                swapRequest.telegramUserId,
+                authenticatedId ?? swapRequest.telegramUserId,
                 swapRequest.telegramUsername,
                 swapRequest.acadYear,
                 swapRequest.semester,
@@ -120,13 +121,12 @@ public class SwapController : ControllerBase
             // Return primitive/DTO object to avoid serialization reference loops
             return Created(string.Empty, new { id = swapReq.Id, status = "Created successfully" });
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            // Catch EF Core database errors or connection issues and return readable 500 error instead of crashing IIS
+            // Log ex if needed
             return StatusCode(500, new 
             { 
-                error = "Database operation failed", 
-                details = ex.InnerException?.Message ?? ex.Message 
+                error = "An internal server error occurred."
             });
         }
     }
