@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { AppRoot, List, SegmentedControl, Section, Cell, Snackbar } from '@telegram-apps/telegram-ui';
+import { AppRoot, List, SegmentedControl, Section, Cell } from '@telegram-apps/telegram-ui';
 import '@telegram-apps/telegram-ui/dist/styles.css';
 
 import { useTelegram } from './hooks/useTelegram';
@@ -17,10 +17,12 @@ export default function App() {
     const { user } = useTelegram();
     const { allSwapsPool, addSwap, cancelSwap, findMatches, fetchMySwaps, isLoadingSwaps } = useSwapData();
     const [activeTab, setActiveTab] = useState<'create' | 'list'>('create');
-    const [snackbar, setSnackbar] = useState<{ message: string; description?: string } | null>(null);
+    const [error, setError] = useState<{ message: string; description?: string } | null>(null);
 
     const showNotification = (message: string, description?: string) => {
-        setSnackbar({ message, description });
+        setError({ message, description });
+        // Auto-clear after some time if desired, or let user close it. 
+        // For now let's just show it.
     };
 
     // Fetch user swaps on mount and when tab changes to 'list'
@@ -142,6 +144,39 @@ export default function App() {
                 padding: '0 0 40px',
                 boxSizing: 'border-box'
             }}>
+                {/* Error Display */}
+                {error && (
+                    <div style={{
+                        background: '#fff5f5',
+                        border: '1px solid #feb2b2',
+                        color: '#c53030',
+                        padding: '12px',
+                        borderRadius: '8px',
+                        marginBottom: '16px',
+                        fontSize: '14px',
+                        position: 'relative'
+                    }}>
+                        <div style={{ fontWeight: 'bold' }}>{error.message}</div>
+                        {error.description && <div style={{ marginTop: '4px' }}>{error.description}</div>}
+                        <button 
+                            onClick={() => setError(null)}
+                            style={{
+                                position: 'absolute',
+                                top: '8px',
+                                right: '8px',
+                                border: 'none',
+                                background: 'none',
+                                color: '#c53030',
+                                cursor: 'pointer',
+                                fontSize: '16px',
+                                fontWeight: 'bold'
+                            }}
+                        >
+                            ×
+                        </button>
+                    </div>
+                )}
+
                 {/* Header Username Tag */}
                 <div style={{ textAlign: 'right', fontSize: '12px', color: '#888', padding: '12px 0 8px' }}>
                     User: <strong>@{user?.username || user?.first_name || 'Guest'}</strong>
@@ -237,16 +272,6 @@ export default function App() {
                         }}
                     />
                 </>
-            )}
-
-            {snackbar && (
-                <Snackbar
-                    onClose={() => setSnackbar(null)}
-                    description={snackbar.description}
-                    duration={4000}
-                >
-                    {snackbar.message}
-                </Snackbar>
             )}
             </div>
         </AppRoot>

@@ -27,14 +27,18 @@ export function SwapList({ mySwaps, findMatches, onCancel }: Props) {
                 return (
                     <Section
                         key={swap.id}
-                        style={{ margin: 0 }}
+                        style={{ 
+                            marginBottom: '12px', 
+                            borderBottom: '1px solid var(--tg-theme-hint-color, #e5e7eb)', 
+                            paddingBottom: '12px' 
+                        }}
                         header={<div style={{ whiteSpace: 'normal', wordBreak: 'break-word', padding: '0' }}>{swap.haveModuleCode} - Class {swap.haveClassNo} ({swap.acadYear} Sem {swap.semester})</div>}
                     >
                         <Cell subtitle={swap.haveDetails}>
                             <strong>You Have: Class {swap.haveClassNo}</strong>
                         </Cell>
                         <Section header={<div style={{ padding: '0' }}>Your Acceptable Options:</div>}>
-                            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '4px', padding: '0' }}>
+                            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '4px', marginBottom: '4px' , padding: '0' }}>
                                 {swap.wantSlots && swap.wantSlots.length > 0 ? (
                                     swap.wantSlots.map((w) => (
                                         <Chip key={`${w.moduleCode}-${w.classNo}`}>{w.moduleCode} ({w.classNo})</Chip>
