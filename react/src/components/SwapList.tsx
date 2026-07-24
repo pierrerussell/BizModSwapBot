@@ -137,7 +137,6 @@ export function SwapList({ mySwaps, findMatches, onCancel, onClose }: Props) {
                                 )
                             }
                         >
-                            Status: <Badge type="number">{matches.length} Matches</Badge>
                         </Cell>
                     </Section>
                 );
