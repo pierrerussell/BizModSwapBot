@@ -1,18 +1,8 @@
 ﻿# BizModSwapBot
 
-BizModSwapBot is a Telegram Mini App designed to help NUS students swap module slots (tutorials/labs) easily. Students can post their current slots and specify which slots they are looking for.
-
-## 🚀 Features
-
-- **Swap Creation**: Post your current module slot and desired alternatives.
-- **Match Finding**: Automated server-side matching of swap requests.
-- **Telegram Integration**: Seamlessly runs as a Telegram Mini App.
-- **My Swaps**: Manage your active and closed swap requests.
-- **Security**: Verified Telegram authentication to protect user data.
-
 ## 🛠 Project Structure
 
-The project consists of two main parts:
+The project consists of two parts:
 
 - **Frontend (`/react`)**: Built with React, TypeScript, and Vite. Uses `@telegram-apps/telegram-ui` for a native look.
 - **Backend (`/src`)**: Built with ASP.NET Core and Entity Framework Core. Handles data persistence, authentication, and matching logic.
